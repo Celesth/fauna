@@ -14,6 +14,7 @@ cmake --build build
 ```bash
 fauna init
 fauna status
+fauna add
 ```
 
 Fauna stores repository data inside `.fauna/`.

@@ -7,7 +7,9 @@
 
 int main(int argc, char *argv[]) {
   if (argc < 2) {
-    std::cerr << "usage: fauna <command>\n";
+    std::cerr
+        << "usage: fauna <command>\n";
+
     return 1;
   }
 
@@ -16,6 +18,7 @@ int main(int argc, char *argv[]) {
   // ---------------------------------------
   // fauna init
   // ---------------------------------------
+
   if (command == "init") {
     try {
       const auto current_directory =
@@ -44,6 +47,7 @@ int main(int argc, char *argv[]) {
   // ---------------------------------------
   // fauna status
   // ---------------------------------------
+
   if (command == "status") {
     try {
       const auto current_directory =
@@ -87,6 +91,7 @@ int main(int argc, char *argv[]) {
   // ---------------------------------------
   // fauna add
   // ---------------------------------------
+
   if (command == "add") {
     if (argc < 3) {
       std::cerr
@@ -122,8 +127,52 @@ int main(int argc, char *argv[]) {
   }
 
   // ---------------------------------------
+  // fauna commit
+  // ---------------------------------------
+
+  if (command == "commit") {
+    if (argc < 4 ||
+        std::string(argv[2]) != "-m") {
+
+      std::cerr
+          << "usage: fauna commit -m <message>\n";
+
+      return 1;
+    }
+
+    try {
+      const auto current_directory =
+          std::filesystem::current_path();
+
+      auto repository =
+          fauna::Repository::discover(
+              current_directory);
+
+      const std::string hash =
+          repository.commit(argv[3]);
+
+      std::cout
+          << "[main "
+          << hash.substr(0, 7)
+          << "] "
+          << argv[3]
+          << '\n';
+
+      return 0;
+    } catch (const std::exception &error) {
+      std::cerr
+          << "fauna: "
+          << error.what()
+          << '\n';
+
+      return 1;
+    }
+  }
+
+  // ---------------------------------------
   // unknown command
   // ---------------------------------------
+
   std::cerr
       << "fauna: unknown command '"
       << command
